@@ -7,8 +7,9 @@ template <class T>
 class DList {
 	struct Node {
 		T data;
-		Node* next;
-		Node(const T& x, Node* y = NULL) : data(x), next(y) {}		// TODO
+		Node* next ;
+		Node* prev;
+		Node(const T& x, Node* y = NULL , Node* p = NULL) : data(x), next(y) , prev(p) {}		// TODO
 	};
 
 	Node* head;
@@ -58,27 +59,39 @@ class DList {
 		}	// not equal
 	};		// end iterator
 
-	DList() : head(NULL) {}		// TODO: header node should be allocated and linked to itself
+	DList() : head(NULL) {
+		head -> prev = head;
+		head -> next = head;
+	}		// TODO: header node should be allocated and linked to itself
+	
 	~DList() { clear(); }
 	void clear() { while (!empty()) pop_front(); }
 
 	// TODO: with sentinel node, head is never null
-	bool empty() { return !head; }
+	bool empty() { 
+	return head-> prev == head;
+	 }
 
 	// TODO: with sentinel node, head always stays the same. Links: link head to new first node, new first node to head, new first node to former first node, former first node to new first node.
 	void push_front(const T& x) {
 		Node* nd = new Node(x);
-		nd->next = head;
-		head = nd;
+		if(head !=NULL){
+		nd->next = head ->next; 
+		nd -> prev = head; 
+		nd-> next -> prev = nd;
+		head = nd; 
+		}
+		
+	
 	}
 
 	// TODO: with sentinel node, head always exists. Links: link head to *second* node, and link second node to head.
 	void pop_front() {
-		if (head) {
 			Node* nd = head->next;
-			delete head;
-			head = nd;
-		}
+			nd-> next-> prev = nd ->prev ;
+			nd-> prev -> next = nd->next ; 
+			delete nd;
+			
 	}
 
 	// TODO: with sentinel node, head never changes. With prev links, don't need to search list for node before position. Four links.
@@ -88,19 +101,37 @@ class DList {
 		if (head == position.nd) head = nd;
 		else {
 			Node* pnd = head;
-			while (pnd && pnd->next != position.nd) pnd = pnd->next;
+			while (pnd && pnd->next != position.nd){
+			pnd = pnd->next;
+	}
+	         nd-> next = pnd-> next; // make the next newnode as next of the pervious node.
+	         	nd -> prev = pnd;
+	         	nd -> next -> prev = nd; // change perivous of the newnode's next node	
 			pnd->next = nd;
+		
 		}
 	}
+	
 
 	// TODO: fill in
 	void erase(const iterator position) {
-		
+    Node *nd = position;
+    if(nd == head)
+    head = nd-> next;
+    else{
+    nd-> prev -> next = nd -> next;
+    nd-> next-> prev = nd ->prev;
+}
+   delete nd;
 	}
 
 	// TODO: with sentinel node, head is not the first valid node, and null is not one past the last valid node
-	iterator begin() { return iterator(head); }
-	iterator end() { return iterator(NULL); }
+	iterator begin() { 
+	return iterator(head->next); 
+	}
+	iterator end() {	
+	 return iterator(head); 
+	 }
 };	// end list
 
 
