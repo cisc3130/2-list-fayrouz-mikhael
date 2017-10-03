@@ -11,7 +11,7 @@
 #define ARRSIZE 1000
 
 template <class Iter>
-void selectionSort(Iter, Iter);	// implement
+  void selectionSort(Iter, Iter);	// implement
 
 int main(int argc, char** argv) {
 	// generate random array
@@ -44,8 +44,8 @@ int main(int argc, char** argv) {
 	std::list<int> stlist;
 	for (int i = 0; i < ARRSIZE; i++) { stlist.push_front(arr[i]); }
 	stlist.sort();
-	auto dit = dlst.begin();
-	auto stlit = stlist.begin();
+	DList<int>::iterator dit = dlst.begin();
+	 std::list<int>::iterator stlit = stlist.begin();
 	while (dit != dlst.end() && stlit != stlist.end()) {
 		assert(*dit == *stlit);
 		++dit; ++stlit;
@@ -53,7 +53,22 @@ int main(int argc, char** argv) {
 }
 
 // TODO: fill in with selection sort implementation
+
 template <class Iter>
 void selectionSort(Iter begin, Iter end) {
+			
+for (Iter i = begin ;  i!=end ; ++i){
+	Iter min = i;
+Iter j = i ;
+j++;
+	while(j!=end){
+		if(*j< *min)
+		min = j;
+		++j;	
+	}
+	std ::swap(*i,*min);
 	
+	
+
+}
 }
