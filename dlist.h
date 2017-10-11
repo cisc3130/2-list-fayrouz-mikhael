@@ -59,38 +59,38 @@ class DList {
 		}	// not equal
 	};		// end iterator
 
-	DList() : head(NULL) {
-		head -> prev = head;
-		head -> next = head;
-	}		// TODO: header node should be allocated and linked to itself
-	
+
+// TODO: header node should be allocated and linked to itself
+ DList() : head(new Node(T())){ 	// make the next and the prevous of the head equal to head
+	 head->next = head;
+	 head->prev = head; 
+}
+
 	~DList() { clear(); }
 	void clear() { while (!empty()) pop_front(); }
 
 	// TODO: with sentinel node, head is never null
 	bool empty() { 
-	return head-> prev == head;
+	return head->next  == head; // it is empty if head's next is equal to head
 	 }
 
 	// TODO: with sentinel node, head always stays the same. Links: link head to new first node, new first node to head, new first node to former first node, former first node to new first node.
 	void push_front(const T& x) {
 		Node* nd = new Node(x);
-		if(head !=NULL){
-		nd->next = head ->next; 
-		nd -> prev = head; 
-		nd-> next -> prev = nd;
-		head = nd; 
-		}
 		
-	
-	}
+		nd->next = head ->next; // link the new node's next to the former first node
+		nd -> prev = head;	// link the pervous of the new node to head
+		nd-> next -> prev = nd; // link the former first node pervous to the new node
+		nd-> prev -> next = nd;	 // link head to the new node
+		
+		}
 
 	// TODO: with sentinel node, head always exists. Links: link head to *second* node, and link second node to head.
 	void pop_front() {
-			Node* nd = head->next;
-			nd-> next-> prev = nd ->prev ;
-			nd-> prev -> next = nd->next ; 
-			delete nd;
+			Node* nd = head->next; 
+			nd-> next-> prev = nd ->prev ; // link the second node to the head
+			nd-> prev -> next = nd->next ; // link head to the second node
+			delete nd; // delete the node
 			
 	}
 
@@ -98,41 +98,39 @@ class DList {
 	void insert(const iterator position, const T& val) {
 		Node* nd = new Node(val, position.nd);	// new node's next will be position's node
 
-		if (head == position.nd) head = nd;
-		else {
-			Node* pnd = head;
-			while (pnd && pnd->next != position.nd){
-			pnd = pnd->next;
-	}
-	         nd-> next = pnd-> next; // make the next newnode as next of the pervious node.
-	         	nd -> prev = pnd;
-	         	nd -> next -> prev = nd; // change perivous of the newnode's next node	
-			pnd->next = nd;
-		
+		if (head->next == position.nd){
+		head->next = nd;
+		nd->prev = head;	
+		}
+		 
+		 
+	else {
+			Node* pnd = position.nd->prev;
+				nd -> prev = pnd; // link the newnode's prev to the prevous node 
+	            nd-> next = pnd-> next; // link the newnode 's next to  the position.nd
+	            pnd->next = nd;// link  the prevous's node next to the the new node
+	         	nd -> next -> prev = nd; // link the position.nd's prevous to the node	
+			
 		}
 	}
-	
 
-	// TODO: fill in
+// TODO: fill	
 	void erase(const iterator position) {
-    Node *nd = position;
-    if(nd == head)
-    head = nd-> next;
-    else{
-    nd-> prev -> next = nd -> next;
-    nd-> next-> prev = nd ->prev;
-}
-   delete nd;
+    Node *ndd = position.nd;
+    ndd-> prev -> next = ndd -> next; // link the position.nd 's prevous 's next to position.nd's next
+    ndd-> next-> prev = ndd ->prev;// link the position.nd 's next 's prevous to position.nd's prevous
+
+			delete ndd;
 	}
 
-	// TODO: with sentinel node, head is not the first valid node, and null is not one past the last valid node
+// TODO: with sentinel node, head is not the first vaild node and null is not one past the last valid node
 	iterator begin() { 
-	return iterator(head->next); 
+	return iterator(head->next); // return the first node after the head
 	}
 	iterator end() {	
-	 return iterator(head); 
+	 return iterator(head); // return head
 	 }
-};	// end list
+};
 
 
 #endif
