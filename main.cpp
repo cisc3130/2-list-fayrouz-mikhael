@@ -66,9 +66,6 @@ j++;
 		min = j;
 		++j;	
 	}
-	std ::swap(*i,*min);
-	
-	
-
+	std ::swap(*i,*min);  
 }
 }
